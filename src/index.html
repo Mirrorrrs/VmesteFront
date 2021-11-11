@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VMeste</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <script src="https://api-maps.yandex.ru/2.1/?apikey=8d6029e4-01d9-4858-ad5c-256377625275&lang=ru_RU" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <div class="header__inner">
+      <div class="header__inner__logo"></div>
+      <div class="header__inner__nav" style="height: 0px;">
+        <div class="header__inner__nav__item" v-bind:class="{bold : router=='index'}" v-on:click="changeRouteState('index')">Главная</div>
+        <div class="header__inner__nav__item" v-bind:class="{bold : router=='events'}" v-on:click="changeRouteState('events')">Все события</div>
+        <div class="header__inner__nav__item" v-bind:class="{bold : router=='my_events'}" v-on:click="changeRouteState('my_events')">Мои события</div>
+        <div class="header__inner__nav__item" v-bind:class="{bold : router=='create_event'}" v-on:click="changeRouteState('create_event')">Создать событие</div>
+        <div class="header__inner__nav__item" v-bind:class="{bold : router=='profile'}" v-if="account" v-on:click="changeRouteState('profile')">Профиль</div>
+      </div>
+      <div class="header__inner__burger" v-on:click="toggleMenu()">@</div>
+    </div>
+  </header>
+
+  <div class="index" v-if="router=='index'">
+    <div class="index__curve1"></div>
+    <div class="container">
+      <div class="index__block1">
+        <div class="index__block1__left">
+          <h2><span class="vmeste">Вместе</span> - децентрализованное<br>
+            приложение для<br>
+            покупки билетов</h2>
+
+          <p>Покупайте билеты на концерты, шоу, выступления и другие мероприятия на <span class="vmeste">Вместе</span></p>
+          <a class="main-button">НАЧАТЬ</a>
+        </div>
+        <div class="index__block1__right">
+          <div>
+            <img class="mashup_phone" alt="Phone" src="images/phone.png">
+            <img class="mashup_app1" alt="Phone" src="images/app1.png">
+            <img class="mashup_app2" alt="Phone" src="images/app2.png">
+            <img class="mashup_app3" alt="Phone" src="images/app3.png">
+            <img class="mashup_app4" alt="Phone" src="images/app4.png">
+            <img class="mashup_man" alt="Phone" src="images/man.png">
+          </div>
+        </div>
+      </div>
+      <div class="index__block2">
+        <div class="index__block2__label">
+          Наши особенности
+        </div>
+
+        <div class="index__block2__list">
+          <div class="index__block2__list__item">
+            <div>
+              <img src="images/index_item.svg" alt="asd">
+            </div>
+            <h2>Блокчейн</h2>
+            <p><span class="vmeste">Вместе</span> полностью построен на блокчейн сети Ethereum</p>
+          </div>
+          <div class="index__block2__list__item">
+            <div>
+              <img src="images/index_item.svg" alt="asd">
+            </div>
+            <h2>Покупка билетов</h2>
+            <p>Оплата происходит с помощью криптовалюты</p>
+          </div>
+          <div class="index__block2__list__item">
+            <div>
+              <img src="images/index_item.svg" alt="asd">
+            </div>
+            <h2>Надежность</h2>
+            <p>Билеты предоставляются в виде NFT токенов на вашем кошельке</p>
+          </div>
+          <div class="index__block2__list__item">
+            <div>
+              <img src="images/index_item.svg" alt="asd">
+            </div>
+            <h2>Удобство</h2>
+            <p>Выбирайте мероприятия на интреактивной карте своего города</p>
+          </div>
+        </div>
+      </div>
+      <div class="index__block3">
+        <div class="index__block3__app3"></div>
+        <div class="index__block3__app1"></div>
+        <div class="index__block3__curve"></div>
+        <div class="index__block3__wrapper">
+          <h2><span>Инновационные решения</span></h2>
+          <p>Регистрируйтесь в нашем приложении</p>
+          <div class="main-button">ВОЙТИ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="events" v-if="router=='events'">
+    <div class="events__wrapper">
+      <div class="events__list">
+        <div class="events__list__item" v-for="item in items.events">
+          <div class="events__list__item__index">{{items.events.indexOf(item)}}</div>
+          <div class="events__list__item__name">{{item[5]}}</div>
+          <div class="events__list__item__datetime">
+            <span>{{item[11]}}</span>
+            <span>4:20</span>
+          </div>
+
+          <div class="events__list__item__address_label">Адрес</div>
+          <div class="events__list__item__address">{{item[4]}}</div>
+          <div class="events__list__item__image">
+          </div>
+          <div class="events__list__item__more main-button" v-on:click="callModal(item,items.events.indexOf(item) )">
+            Подробнее
+          </div>
+
+
+        </div>
+      </div>
+      <div class="events__panel">
+        <div class="events__panel__create_event main-button">
+          Создать событие
+        </div>
+        <div class="events__panel__slider" style="display: none;">
+          <div class="events__panel__slider__arrow">
+            -
+          </div>
+          <div class="events__panel__slider__arrow">
+            +
+          </div>
+        </div>
+        <div class="events__panel__switch">
+          Тоглер
+        </div>
+      </div>
+
+    </div>
+    <div id="modal"  style="display: none;">
+      <div class="modal__window">
+        <div class="modal__window__close" style="cursor: pointer" v-on:click="closeModal()">X</div>
+
+        <div class="modal__window__body">
+          <div class="modal__window__body__index">{{modal.index}}</div>
+          <div class="modal__window__body__information">
+            <div class="modal__window__body__information__top">
+              <div class="modal__window__body__information__top__name">{{modal.name}}</div>
+              <div class="modal__window__body__information__top__datetime">
+                <span>{{modal.time}}</span>
+                <span>4:20</span>
+              </div>
+              <div class="modal__window__body__information__top__address">
+                <div class="modal__window__body__information__top__address__label">Адрес</div>
+                <div class="modal__window__body__information__top__address__address">{{modal.address}}</div>
+              </div>
+            </div>
+            <div class="modal__window__body__information__bottom">
+              <div class="modal__window__body__information__bottom__left">
+                <!-- image -->
+              </div>
+              <div class="modal__window__body__information__bottom__right">
+                <div class="modal__window__body__information__bottom__right__description_label">Описание</div>
+                <div class="modal__window__body__information__bottom__right__description">{{modal.description}}</div>
+                <div class="modal__window__body__information__bottom__right__price">Цена: {{modal.value}} ETH</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal__window__body__information__buy main-button" style="cursor: pointer" v-if="modal.ticketsLeft!=0" v-on:click="buyTicket(modal.index, modal.value)">
+            УЧАСТВОВАТЬ
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="my_events" v-if="router=='my_events'">
+
+  </div>
+
+  <div class="profile" v-if="router=='profile' && account">
+    <div class="profile__panel">
+      <div class="profile__panel__information">
+        <div class="profile__panel__information__avatar"></div>
+        <div class="profile__panel__information__other">
+          <div class="profile__panel__information__other__name">{{userInstace.user[0]}}</div>
+          <div class="profile__panel__information__other__description">{{userInstace.user[2]}}</div>
+        </div>
+      </div>
+      <div class="profile__panel__menu">
+        <div class="profile__panel__menu__item" v-on:click="prf='profile'">Профиль</div>|
+        <div class="profile__panel__menu__item" v-on:click="prf='tickets'">Билеты</div>
+      </div>
+      <div class="profile__panel__screens">
+        <div class="profile__panel__screens__profile" v-if="prf=='profile'">
+          <form v-on:submit.prevent = "updateProfile()">
+            <div><label for="profile_name">Имя</label><input type="text" v-model="newUserName" name="profile_name"></div>
+            <div><label for="profile_info">Информация</label><textarea name="profile_info" v-model="newDescription"  cols="21" rows="3"></textarea></div>
+            <button type="submit" class="main-button">Сохранить</button>
+          </form>
+        </div>
+        <div class="profile__panel__screens__tickets" v-if="prf=='tickets'">
+          <div ><img src="images/qrCode.png" alt=""></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="create_event" v-if="router=='create_event'">
+    <div class="create_event__panel">
+      <div class="create_event__panel__line">
+        <p>Название события</p><input v-model="eventName" type="text" name="event_name" placeholder="Крутое мероприятие">
+      </div>
+      <div class="create_event__panel__line">
+        <p>Описание события</p><textarea v-model="eventDescription" name="event_description" rows=5 placeholder="У нас большое мероприятие"></textarea>
+      </div>
+      <div class="create_event__panel__line">
+        <p>Адрес</p><input v-model="eventAddress" type="text" name="event_address" placeholder="г. Казань, Деревня Универсиады д. 32">
+      </div>
+      <div class="create_event__panel__line">
+        <p>Количество билетов</p><input v-model="eventCount" type="text" name="count" placeholder="200">
+      </div>
+
+      <div class="create_event__panel__line">
+        <p>Время начала</p><input v-model="eventTime" type="datetime-local" name="event_address">
+      </div>
+      <div class="create_event__panel__line">
+        <p>Цена билета<img src="./images/eth.svg" alt=""></p><input v-model="eventValue" type="number" name="event_price" placeholder="Цена на билет (ETH)">
+      </div>
+      <div class="create_event__panel__line">
+        <p>Превью события</p><input type="file" name="event_image">
+      </div>
+
+      <div id="map">
+
+      </div>
+
+      <div class="create_event__panel__submit main-button" v-on:click="createEvent()">
+        Создать событие
+      </div>
+    </div>
+  </div>
+
+  <div id="qrCode"></div>
+
+
+</div>
+</body>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/web3.min.js"></script>
+<script src="js/truffle-contract.js"></script>
+<script src="js/qrcode.min.js"></script>
+<script src="js/html2canvas.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/random.js"></script>
+<script src="js/sha256.min.js"></script>
+<script src="js/app.js"></script>
+<script type="text/javascript">
+  // Функция ymaps.ready() будет вызвана, когда
+  // загрузятся все компоненты API, а также когда будет готово DOM-дерево.
+
+  let _coords = [55.76, 37.64];
+
+  function init(){
+    // Создание карты.
+    var myPlacemark;
+    var myMap = new ymaps.Map("map", {
+      center: [55.76, 37.64],
+      // Уровень масштабирования. Допустимые значения:
+      // от 0 (весь мир) до 19.
+      zoom: 13
+    });
+
+    myMap.events.add('click', function (e) {
+      var coords = e.get('coords');
+
+      _coords = coords;
+      console.log(_coords);
+
+      // Если метка уже создана – просто передвигаем ее.
+      if (myPlacemark) {
+        myPlacemark.geometry.setCoordinates(coords);
+      }
+      // Если нет – создаем.
+      else {
+        myPlacemark = createPlacemark(coords);
+        myMap.geoObjects.add(myPlacemark);
+        // Слушаем событие окончания перетаскивания на метке.
+        myPlacemark.events.add('dragend', function () {
+          getAddress(myPlacemark.geometry.getCoordinates());
+        });
+      }
+      getAddress(coords);
+    });
+
+  }
+
+  // Создание метки.
+  function createPlacemark(coords) {
+    return new ymaps.Placemark(coords, {
+      iconCaption: 'Место проведение'
+    }, {
+      preset: 'islands#darkOrangeIcon',
+      draggable: true
+    });
+  }
+
+  // Определяем адрес по координатам (обратное геокодирование).
+  function getAddress(coords) {
+    myPlacemark.properties.set('iconCaption', 'поиск...');
+    ymaps.geocode(coords).then(function (res) {
+      var firstGeoObject = res.geoObjects.get(0);
+
+      myPlacemark.properties
+              .set({
+                // Формируем строку с данными об объекте.
+                iconCaption: [
+                  // Название населенного пункта или вышестоящее административно-территориальное образование.
+                  firstGeoObject.getLocalities().length ? firstGeoObject.getLocalities() : firstGeoObject.getAdministrativeAreas(),
+                  // Получаем путь до топонима, если метод вернул null, запрашиваем наименование здания.
+                  firstGeoObject.getThoroughfare() || firstGeoObject.getPremise()
+                ].filter(Boolean).join(', '),
+                // В качестве контента балуна задаем строку с адресом объекта.
+                balloonContent: firstGeoObject.getAddressLine()
+              });
+    });
+  }
+  ymaps.ready(init);
+
+
+</script>
+</html>
